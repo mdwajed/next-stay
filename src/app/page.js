@@ -1,15 +1,14 @@
 import HotelCard from "@/components/hotel/HotelCard";
-import Hotels from "@/components/hotel/Hotels";
 import Pagination from "@/components/hotel/Pagination";
 async function fetchHotels(page = 1, limit = 8) {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/hotels?page=${page}&limit=${limit}`,
-    { cache: "no-store" } // Ensure fresh data on every request
+    { cache: "no-store" }
   );
 
   if (!response.ok) throw new Error("Failed to fetch hotels");
 
-  return response.json(); // Assuming API response structure is { data, pagination }
+  return response.json();
 }
 export default async function Home({ searchParams }) {
   const page = parseInt(searchParams.page) || 1;

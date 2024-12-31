@@ -7,8 +7,8 @@ const HotelSchema = new Schema(
     price: { type: Number, required: true, min: 0 },
     address: { type: String, required: true },
     availableRooms: { type: Number, required: true, min: 0 },
-    images: [{ type: String }], // Array of image URLs
-    averageRating: { type: Number, default: 0 },
+    images: [{ type: String }],
+    averageRating: { type: Number, default: 5 },
   },
   {
     timestamps: true,
