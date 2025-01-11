@@ -1,6 +1,6 @@
 import HotelCard from "@/components/hotel/HotelCard";
 import Pagination from "@/components/hotel/Pagination";
-async function fetchHotels(page = 1, limit = 8) {
+export async function fetchHotels(page = 1, limit = 8) {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/hotels?page=${page}&limit=${limit}`,
     { cache: "no-store" }

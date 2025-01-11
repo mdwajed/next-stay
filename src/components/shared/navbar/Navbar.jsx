@@ -2,11 +2,15 @@ import Image from "next/image";
 import React from "react";
 import ToggleButton from "./ToggleButton";
 
-const Navbar = () => {
+import Link from "next/link";
+import { auth } from "../../../../auth";
+
+const Navbar = async () => {
+  const session = await auth();
   return (
     <nav className="grid grid-cols-2 md:flex justify-between items-center py-3 bg-white border-b mb-6 md:gap-8 px-4 md:px-8 lg:px-20">
       <div className="flex items-center">
-        <a href="./index.html">
+        <Link href="/">
           <Image
             src="/logo.svg"
             alt="Hotel Logo"
@@ -14,7 +18,7 @@ const Navbar = () => {
             height={32}
             className="h-8 w-auto"
           />
-        </a>
+        </Link>
       </div>
 
       <div className="row-start-2 col-span-2 border-0 md:border flex shadow-sm hover:shadow-md transition-all md:rounded-full items-center px-2">
@@ -36,7 +40,7 @@ const Navbar = () => {
           <i className="fas fa-language text-zinc-700 text-xl"></i>
         </button>
 
-        <ToggleButton />
+        <ToggleButton session={session} />
       </div>
     </nav>
   );

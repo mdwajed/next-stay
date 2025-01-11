@@ -1,11 +1,45 @@
 "use client";
-import Link from "next/link";
+
+import { formatDateRange } from "@/lib/formateDate";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 const CheckInOutForm = ({ hotel }) => {
   const [checkInDate, setCheckInDate] = useState(null);
   const [checkOutDate, setCheckOutDate] = useState(null);
+  const [guests, setGuests] = useState("");
+  const router = useRouter();
+
+  const handleReserve = () => {
+    if (!checkInDate || !checkOutDate || !guests) {
+      alert("Please fill in all fields before proceeding.");
+      return;
+    }
+
+    // Format dates for display
+
+    const formattedDateRange = formatDateRange(checkInDate, checkOutDate);
+
+    const reservationDetails = {
+      dateRange: formattedDateRange,
+      guests,
+      hotel: {
+        pricePerNight: hotel.hotel.pricePerNight,
+        image: hotel.hotel.image,
+        rating: hotel.hotel.rating,
+        reviews: hotel.hotel.reviewsNo,
+      },
+    };
+    console.log("Saved reservationDetails:", reservationDetails);
+
+    localStorage.setItem(
+      "reservationDetails",
+      JSON.stringify(reservationDetails)
+    );
+
+    router.push("/payment");
+  };
   return (
     <div>
       <div className="bg-white shadow-lg rounded-xl p-6 border">
@@ -37,15 +71,21 @@ const CheckInOutForm = ({ hotel }) => {
               className="p-3 w-full"
             />
           </div>
-          <input type="number" placeholder="Guests" className="w-full p-3" />
+          <input
+            type="number"
+            placeholder="Guests"
+            className="w-full p-3"
+            value={guests}
+            onChange={(e) => setGuests(e.target.value)}
+          />
         </div>
 
-        <Link
-          href="/payment"
+        <button
+          onClick={handleReserve}
           className="w-full block text-center bg-primary text-white py-3 rounded-lg transition-all hover:brightness-90"
         >
           Reserve
-        </Link>
+        </button>
 
         <div className="text-center mt-4 text-gray-600">
           <p>You won&apos;st be charged yet</p>

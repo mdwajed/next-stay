@@ -1,14 +1,78 @@
+"use client";
+import { formatDateRange } from "@/lib/formateDate";
 import Image from "next/image";
-import React from "react";
-
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 const PaymentProcess = () => {
+  const [reservationDetails, setReservationDetails] = useState({});
+  const [dateEditing, setDateEditing] = useState(false);
+  const [guestEditing, setGuestEditing] = useState(false);
+  const [updatedDetails, setUpdatedDetails] = useState({});
+  const router = useRouter();
+  // Load reservation details from localStorage
+  useEffect(() => {
+    const storedDetails = localStorage.getItem("reservationDetails");
+    if (storedDetails) {
+      const parsedDetails = JSON.parse(storedDetails);
+      setReservationDetails(parsedDetails);
+      setUpdatedDetails(parsedDetails);
+    }
+  }, []);
+
+  const handleEditDateToggle = () => setDateEditing(!dateEditing);
+
+  const handleEditGuestToggle = () => setGuestEditing(!guestEditing);
+
+  const handleSaveChanges = () => {
+    setReservationDetails(updatedDetails);
+    localStorage.setItem("reservationDetails", JSON.stringify(updatedDetails));
+    setDateEditing(false);
+    setGuestEditing(false);
+  };
+
+  const handlePayment = () => {
+    localStorage.removeItem("reservationDetails");
+    router.push({
+      pathname: "/success",
+      query: { details: JSON.stringify(reservationDetails) },
+    });
+  };
+
+  // Calculate total price dynamically
+
+  const calculatePrice = () => {
+    if (!updatedDetails.checkInDate || !updatedDetails.checkOutDate) {
+      return { nights: 0, total: 0 };
+    }
+    const nights = Math.max(
+      Math.ceil(
+        (new Date(updatedDetails.checkOutDate) -
+          new Date(updatedDetails.checkInDate)) /
+          (1000 * 60 * 60 * 24)
+      ),
+      0
+    );
+    const nightlyRate = reservationDetails.hotel?.pricePerNight || 0;
+    const cleaningFee = 17.5;
+    const serviceFee = 51.31;
+
+    return {
+      nights,
+      total: nights * nightlyRate + cleaningFee + serviceFee,
+    };
+  };
+
+  const priceDetails = calculatePrice();
   return (
     <div className="max-w-7xl mx-auto px-6 py-8">
       <div className="mb-8">
-        <a href="/details" className="text-zinc-800 hover:underline">
+        <Link href="/details" className="text-zinc-800 hover:underline">
           <i className="fas fa-chevron-left mr-2"></i>
           Request to book
-        </a>
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -19,17 +83,112 @@ const PaymentProcess = () => {
             <div className="flex justify-between items-center mb-4">
               <div>
                 <h3 className="font-medium">Dates</h3>
-                <p className="text-zinc-600 text-sm">Jan 3 - 8, 2025</p>
+                {!dateEditing ? (
+                  <p className="text-zinc-600 text-sm">
+                    {formatDateRange(
+                      updatedDetails.checkInDate,
+                      updatedDetails.checkOutDate
+                    ) || "No dates selected"}
+                  </p>
+                ) : (
+                  <div className="space-y-2">
+                    <DatePicker
+                      selected={
+                        updatedDetails.checkInDate
+                          ? new Date(updatedDetails.checkInDate)
+                          : new Date()
+                      }
+                      onChange={(date) =>
+                        date
+                          ? setUpdatedDetails({
+                              ...updatedDetails,
+                              checkInDate: date.toISOString(),
+                            })
+                          : null
+                      }
+                      className="p-2 border rounded-lg w-full"
+                    />
+                    <DatePicker
+                      selected={
+                        updatedDetails.checkOutDate
+                          ? new Date(updatedDetails.checkOutDate)
+                          : new Date()
+                      }
+                      onChange={(date) =>
+                        date
+                          ? setUpdatedDetails({
+                              ...updatedDetails,
+                              checkOutDate: date.toISOString(),
+                            })
+                          : null
+                      }
+                      className="p-2 border rounded-lg w-full"
+                    />
+                  </div>
+                )}
               </div>
-              <button className="text-zinc-800 underline text-sm">Edit</button>
+              <div className="flex gap-4">
+                <button
+                  onClick={handleEditDateToggle}
+                  className="text-zinc-800 underline text-sm"
+                >
+                  {dateEditing ? "Cancel" : "Edit"}
+                </button>
+                <div>
+                  {dateEditing && (
+                    <button
+                      onClick={handleSaveChanges}
+                      className="text-zinc-800 underline text-sm"
+                    >
+                      Save
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
 
             <div className="flex justify-between items-center">
               <div>
                 <h3 className="font-medium">Guests</h3>
-                <p className="text-zinc-600 text-sm">1 guest</p>
+                {!guestEditing ? (
+                  <p className="text-zinc-600 text-sm">
+                    {reservationDetails.guests}{" "}
+                    {reservationDetails.guests === "1" ? "guest" : "guests"}
+                  </p>
+                ) : (
+                  <input
+                    type="number"
+                    min="1"
+                    value={updatedDetails.guests}
+                    onChange={(e) =>
+                      setUpdatedDetails({
+                        ...updatedDetails,
+                        guests: e.target.value,
+                      })
+                    }
+                    className="p-2 border rounded-lg w-16"
+                  />
+                )}
               </div>
-              <button className="text-zinc-800 underline text-sm">Edit</button>
+
+              <div className="flex gap-4">
+                <button
+                  onClick={handleEditGuestToggle}
+                  className="text-zinc-800 underline text-sm"
+                >
+                  {guestEditing ? "Cancel" : "Edit"}
+                </button>
+                <div>
+                  {guestEditing && (
+                    <button
+                      onClick={handleSaveChanges}
+                      className="text-zinc-800 underline text-sm"
+                    >
+                      Save
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
           </section>
 
@@ -92,19 +251,19 @@ const PaymentProcess = () => {
             </div>
           </section>
 
-          <a
-            href="./success.html"
+          <button
+            onClick={handlePayment}
             className="w-full block text-center bg-primary text-white py-3 rounded-lg mt-6 hover:brightness-90"
           >
             Request to book
-          </a>
+          </button>
         </div>
 
         <div>
           <div className="bg-white p-6 rounded-lg shadow-sm mb-8 sticky top-0">
             <div className="flex items-start gap-4 mb-6">
               <Image
-                src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1980&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                src={reservationDetails.hotel?.image}
                 alt="Property"
                 width={80}
                 height={80}
@@ -118,7 +277,8 @@ const PaymentProcess = () => {
                 <div className="flex items-center">
                   <i className="fas fa-star text-sm mr-1"></i>
                   <span className="text-xs mt-1 text-zinc-500">
-                    5.00 (3 Reviews)
+                    {reservationDetails.hotel?.rating} (
+                    {reservationDetails.hotel?.reviewsNo} reviews)
                   </span>
                 </div>
               </div>
@@ -128,8 +288,15 @@ const PaymentProcess = () => {
               <h3 className="font-semibold mb-4">Price details</h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span>$59.08 x 5 nights</span>
-                  <span>$295.39</span>
+                  <span>
+                    ${reservationDetails.hotel?.pricePerNight} x{" "}
+                    {priceDetails.nights} nights
+                  </span>
+                  <span>
+                    $
+                    {priceDetails.nights *
+                      reservationDetails.hotel?.pricePerNight || 0}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Cleaning fee</span>
@@ -141,7 +308,7 @@ const PaymentProcess = () => {
                 </div>
                 <div className="flex justify-between font-semibold pt-3 border-t">
                   <span>Total (USD)</span>
-                  <span>$364.20</span>
+                  <span>{priceDetails.total.toFixed(2)}</span>
                 </div>
               </div>
             </div>

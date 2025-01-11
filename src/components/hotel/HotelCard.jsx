@@ -3,7 +3,7 @@ import Link from "next/link";
 import React from "react";
 
 const HotelCard = ({ hotel }) => {
-  console.log("Hotels", hotel);
+  // console.log("Hotels", hotel);
   if (!hotel) return null;
   return (
     <Link href={`/hotels/${hotel.id}`} className="block group">

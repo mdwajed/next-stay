@@ -14,7 +14,6 @@ export async function GET(req) {
       .skip((page - 1) * limit)
       .limit(limit)
       .sort({ createdAt: -1 });
-
     const total = await Hotel.countDocuments();
 
     return NextResponse.json({

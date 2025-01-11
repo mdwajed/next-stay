@@ -1,11 +1,19 @@
 "use client";
+
+import { SignOut } from "@/components/auth/SignOut";
+import Image from "next/image";
+import Link from "next/link";
 import React, { useState } from "react";
 
-const ToggleButton = () => {
+const ToggleButton = ({ session }) => {
+  console.log("toggle session", session);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
+  };
+  const closeDropdown = () => {
+    setIsDropdownOpen(false);
   };
   return (
     <div>
@@ -15,29 +23,45 @@ const ToggleButton = () => {
       >
         <i className="fas fa-bars"></i>
         <span className="bg-zinc-600 w-6 h-6 rounded-full flex items-center justify-center text-xs text-white">
-          <i className="fas fa-user text-white"></i>
+          {session?.user?.image ? (
+            <Image
+              src={session?.user?.image}
+              alt="Hotel Logo"
+              width={24}
+              height={24}
+              className="h-6 w-6 object-cover rounded-full "
+            />
+          ) : (
+            <i className="fas fa-user text-white bg-black rounded-full"></i>
+          )}
         </span>
       </button>
       {isDropdownOpen && (
         <div className="max-w-48 w-48 bg-white shadow-sm border rounded-md absolute right-0 top-full max-h-fit mt-2 z-50">
           <ul className="">
-            <a href="/login" className="w-full">
+            {session ? (
               <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4">
-                Login
+                <SignOut />
               </li>
-            </a>
+            ) : (
+              <Link href="/login" className="w-full" onClick={closeDropdown}>
+                <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4">
+                  Login
+                </li>
+              </Link>
+            )}
 
-            <a href="/signup" className="w-full">
+            <Link href="/register" className="w-full" onClick={closeDropdown}>
               <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4">
                 Signup
               </li>
-            </a>
+            </Link>
 
-            <a href="#" className="w-full">
+            <Link href="#" className="w-full" onClick={closeDropdown}>
               <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4">
                 Help
               </li>
-            </a>
+            </Link>
           </ul>
         </div>
       )}
