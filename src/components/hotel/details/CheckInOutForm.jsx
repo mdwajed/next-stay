@@ -1,6 +1,5 @@
 "use client";
 
-import { formatDateRange } from "@/lib/formateDate";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
@@ -19,13 +18,13 @@ const CheckInOutForm = ({ hotel }) => {
 
     // Format dates for display
 
-    const formattedDateRange = formatDateRange(checkInDate, checkOutDate);
-
     const reservationDetails = {
-      dateRange: formattedDateRange,
+      checkInDate: checkInDate.toISOString(),
+      checkOutDate: checkOutDate.toISOString(),
       guests,
       hotel: {
         pricePerNight: hotel.hotel.pricePerNight,
+        name: hotel.hotel.name,
         image: hotel.hotel.image,
         rating: hotel.hotel.rating,
         reviews: hotel.hotel.reviewsNo,

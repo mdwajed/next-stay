@@ -1,7 +1,25 @@
+"use client";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import Download from "./Download";
+import SendEmail from "./SendEmail";
 
 const SuccessModal = () => {
+  const [paymentSummary, setPaymentSummary] = useState(null);
+
+  useEffect(() => {
+    const summary = localStorage.getItem("paymentSummary");
+    if (summary) {
+      setPaymentSummary(JSON.parse(summary));
+    }
+  }, []);
+
+  if (!paymentSummary) {
+    return <p>Loading...</p>;
+  }
+  const { paymentIntent, billingDetails, reservationDetails, priceDetails } =
+    paymentSummary;
+  console.log(paymentSummary);
   return (
     <div className="bg-gray-50">
       <div className="max-w-3xl mx-auto p-6">
@@ -18,17 +36,22 @@ const SuccessModal = () => {
         <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
           <div className="flex items-start gap-6 mb-6 pb-6 border-b">
             <Image
-              src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1980&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              src={reservationDetails?.hotel?.image}
               alt="Property"
               width={96}
               height={96}
               className="w-32 h-32 rounded-lg object-cover"
             />
             <div>
-              <h2 className="text-2xl font-semibold mb-2">Sea View Room</h2>
+              <h2 className="text-2xl font-semibold mb-2">
+                {reservationDetails?.hotel?.name}
+              </h2>
               <div className="flex items-center mb-2">
-                <i className="fas fa-star text-sm mr-1"></i>
-                <span className="text-sm">4.6 (500+ reviews)</span>
+                <i className="fas fa-star text-yellow-500 text-sm mr-1"></i>
+                <span className="text-sm">
+                  {reservationDetails?.hotel?.rating} (
+                  {reservationDetails?.hotel?.reviews} reviews)
+                </span>
               </div>
               <p className="text-zinc-600">
                 One room and one living room with a straight sea view....
@@ -36,21 +59,31 @@ const SuccessModal = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-medium">
             <div>
               <h3 className="font-semibold mb-4">Reservation Details</h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-zinc-600 text-sm">Check-in</span>
-                  <span className="text-zinc-500 text-sm">Jan 3, 2025</span>
+                  <span className="font-semibold">
+                    {new Date(
+                      reservationDetails?.checkInDate
+                    ).toLocaleDateString()}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-zinc-600 text-sm">Check-out</span>
-                  <span className="text-zinc-500 text-sm">Jan 8, 2025</span>
+                  <span className="font-semibold">
+                    {new Date(
+                      reservationDetails?.checkOutDate
+                    ).toLocaleDateString()}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-zinc-600 text-sm">Guests</span>
-                  <span className="text-zinc-500 text-sm">1 guest</span>
+                  <span className="font-semibold">
+                    {reservationDetails?.guests} guests
+                  </span>
                 </div>
               </div>
             </div>
@@ -59,32 +92,24 @@ const SuccessModal = () => {
               <h3 className="font-semibold mb-4">Payment Summary</h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-zinc-600">Total amount paid</span>
-                  <span className="font-semibold">$364.20</span>
+                  <span className="text-zinc-600">Total amount paid : </span>
+                  <span className="font-semibold ">
+                    ${priceDetails?.total?.toFixed(2)}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-zinc-600 text-sm">Booking ID</span>
-                  <span>BOOK123456</span>
+                  <span className="text-zinc-600 text-sm">payment ID : </span>
+                  <span className="font-semibold">{paymentIntent.id}</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
         <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
           <h3 className="text-xl font-semibold mb-6">Next Steps</h3>
           <div className="space-y-6">
-            <div className="flex gap-4">
-              <div className="text-primary">
-                <i className="fas fa-envelope text-xl"></i>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-1">Check your email</h4>
-                <p className="text-zinc-600">
-                  We&apos;ve sent your confirmation and trip details to your
-                  email address.
-                </p>
-              </div>
+            <div>
+              <SendEmail paymentSummary={paymentSummary} />
             </div>
 
             <div className="flex gap-4">
@@ -114,12 +139,7 @@ const SuccessModal = () => {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button className="px-6 py-3 bg-primary text-white rounded-lg hover:brightness-90">
-            <i className="fas fa-download mr-2"></i>
-            Download Receipt
-          </button>
-        </div>
+        <Download paymentSummary={paymentSummary} />
 
         <div className="mt-12 text-center">
           <p className="text-zinc-600">Need help with your booking?</p>

@@ -6,6 +6,13 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import BillPayment from "./BillPayment";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+);
+
 const PaymentProcess = () => {
   const [reservationDetails, setReservationDetails] = useState({});
   const [dateEditing, setDateEditing] = useState(false);
@@ -17,6 +24,17 @@ const PaymentProcess = () => {
     const storedDetails = localStorage.getItem("reservationDetails");
     if (storedDetails) {
       const parsedDetails = JSON.parse(storedDetails);
+      if (parsedDetails.checkInDate) {
+        parsedDetails.checkInDate = new Date(
+          parsedDetails.checkInDate
+        ).toISOString();
+      }
+      if (parsedDetails.checkOutDate) {
+        parsedDetails.checkOutDate = new Date(
+          parsedDetails.checkOutDate
+        ).toISOString();
+      }
+
       setReservationDetails(parsedDetails);
       setUpdatedDetails(parsedDetails);
     }
@@ -33,16 +51,14 @@ const PaymentProcess = () => {
     setGuestEditing(false);
   };
 
-  const handlePayment = () => {
-    localStorage.removeItem("reservationDetails");
-    router.push({
-      pathname: "/success",
-      query: { details: JSON.stringify(reservationDetails) },
-    });
-  };
-
-  // Calculate total price dynamically
-
+  const nights = Math.max(
+    Math.ceil(
+      (new Date(updatedDetails.checkOutDate) -
+        new Date(updatedDetails.checkInDate)) /
+        (1000 * 60 * 60 * 24)
+    ),
+    0
+  );
   const calculatePrice = () => {
     if (!updatedDetails.checkInDate || !updatedDetails.checkOutDate) {
       return { nights: 0, total: 0 };
@@ -62,8 +78,13 @@ const PaymentProcess = () => {
     return {
       nights,
       total: nights * nightlyRate + cleaningFee + serviceFee,
+      cleaningFee,
+      serviceFee,
     };
   };
+  console.log("Check-in Date:", updatedDetails.checkInDate);
+  console.log("Check-out Date:", updatedDetails.checkOutDate);
+  console.log("Billing reservationdetails:", reservationDetails);
 
   const priceDetails = calculatePrice();
   return (
@@ -86,8 +107,12 @@ const PaymentProcess = () => {
                 {!dateEditing ? (
                   <p className="text-zinc-600 text-sm">
                     {formatDateRange(
-                      updatedDetails.checkInDate,
+                      updatedDetails.checkInDate
+                        ? new Date(updatedDetails.checkInDate)
+                        : null,
                       updatedDetails.checkOutDate
+                        ? new Date(updatedDetails.checkOutDate)
+                        : null
                     ) || "No dates selected"}
                   </p>
                 ) : (
@@ -152,7 +177,7 @@ const PaymentProcess = () => {
                 <h3 className="font-medium">Guests</h3>
                 {!guestEditing ? (
                   <p className="text-zinc-600 text-sm">
-                    {reservationDetails.guests}{" "}
+                    {reservationDetails.guests}
                     {reservationDetails.guests === "1" ? "guest" : "guests"}
                   </p>
                 ) : (
@@ -191,8 +216,8 @@ const PaymentProcess = () => {
               </div>
             </div>
           </section>
-
-          <section className="mb-8">
+          {/* payment process */}
+          {/* <section className="mb-8">
             <h2 className="text-xl font-semibold mb-4">
               Pay with American Express
             </h2>
@@ -256,7 +281,13 @@ const PaymentProcess = () => {
             className="w-full block text-center bg-primary text-white py-3 rounded-lg mt-6 hover:brightness-90"
           >
             Request to book
-          </button>
+          </button> */}
+          <Elements stripe={stripePromise}>
+            <BillPayment
+              reservationDetails={reservationDetails}
+              priceDetails={priceDetails}
+            />
+          </Elements>
         </div>
 
         <div>
@@ -270,12 +301,12 @@ const PaymentProcess = () => {
                 className="w-20 h-20 rounded-lg object-cover"
               />
               <div>
-                <p className="text-sm">
-                  One room and one living room with a straight sea view, 1.8m
-                  queen...
+                <p className="text-xl font-semibold">
+                  {reservationDetails.hotel?.name}
                 </p>
+                <p className="text-base ">Plan to stay {nights} nights</p>
                 <div className="flex items-center">
-                  <i className="fas fa-star text-sm mr-1"></i>
+                  <i className="fas fa-star text-yellow-500 text-sm mr-1"></i>
                   <span className="text-xs mt-1 text-zinc-500">
                     {reservationDetails.hotel?.rating} (
                     {reservationDetails.hotel?.reviewsNo} reviews)
