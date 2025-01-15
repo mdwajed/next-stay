@@ -19,6 +19,8 @@ const nextConfig = {
     ],
   },
   output: "standalone",
+  swcMinify: true,
+  productionBrowserSourceMaps: true,
 };
 
 export default nextConfig;
