@@ -67,7 +67,7 @@ const BillPayment = ({ reservationDetails, priceDetails }) => {
             card: cardElement,
             billing_details: billingDetails,
           },
-        }
+        },
       );
 
       if (error) {
@@ -81,7 +81,7 @@ const BillPayment = ({ reservationDetails, priceDetails }) => {
             billingDetails,
             reservationDetails,
             priceDetails,
-          })
+          }),
         );
         window.location.href = "/success";
       }

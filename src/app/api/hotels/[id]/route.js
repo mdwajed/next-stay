@@ -9,7 +9,7 @@ export async function GET(_, { params }) {
     if (!hotel) {
       return NextResponse.json(
         { message: `Hotel ${params.id} not found` },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -33,29 +33,18 @@ export async function POST(req, { params }) {
     if (!hotel) {
       return NextResponse.json(
         { message: `Hotel ${params.id} not found` },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
     const body = await req.json();
     const { reviewerName, rating, reviewText, userId } = body;
 
-    // Validate required fields
-    // if (!reviewerName || !rating || !reviewText || !userId) {
-    //   return NextResponse.json(
-    //     {
-    //       message:
-    //         "All fields (reviewerName, rating, reviewText, userId) are required.",
-    //     },
-    //     { status: 400 }
-    //   );
-    // }
-
     // Check if the user has already submitted a review
     if (hotel.reviews.some((r) => r.userId === userId)) {
       return NextResponse.json(
         { message: "User has already reviewed this hotel." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -94,7 +83,7 @@ export async function DELETE(_, { params }) {
     if (!hotel) {
       return NextResponse.json(
         { message: `Hotel ${params.id} not found` },
-        { status: 404 }
+        { status: 404 },
       );
     }
 

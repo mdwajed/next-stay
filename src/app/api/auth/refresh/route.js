@@ -7,7 +7,7 @@ export async function POST(req) {
     if (!authHeader) {
       return new Response(
         JSON.stringify({ error: "Authorization header is required." }),
-        { status: 401, headers: { "Content-Type": "application/json" } }
+        { status: 401, headers: { "Content-Type": "application/json" } },
       );
     }
     const refreshToken = authHeader?.split(" ")[1];
@@ -18,7 +18,7 @@ export async function POST(req) {
         JSON.stringify({
           error: "Refresh token is required and must be valid.",
         }),
-        { status: 401, headers: { "Content-Type": "application/json" } }
+        { status: 401, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -29,7 +29,7 @@ export async function POST(req) {
     const newAccessToken = jwt.sign(
       { userId: decoded.userId },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "15m" }
+      { expiresIn: "15m" },
     );
 
     return new Response(
@@ -37,7 +37,7 @@ export async function POST(req) {
         accessToken: newAccessToken,
         refreshToken,
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   } catch (error) {
     console.error("Error in /api/auth/refresh:", error);
@@ -45,7 +45,7 @@ export async function POST(req) {
     const status = error.name === "JsonWebTokenError" ? 403 : 500;
     return new Response(
       JSON.stringify({ error: "Invalid or expired refresh token." }),
-      { status, headers: { "Content-Type": "application/json" } }
+      { status, headers: { "Content-Type": "application/json" } },
     );
   }
 }

@@ -13,7 +13,7 @@ export async function POST(req) {
     if (!email || !password) {
       return new Response(
         JSON.stringify({ error: "Email and password are required." }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -24,7 +24,7 @@ export async function POST(req) {
     if (!user) {
       return new Response(
         JSON.stringify({ error: "Invalid email or password." }),
-        { status: 401, headers: { "Content-Type": "application/json" } }
+        { status: 401, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -33,7 +33,7 @@ export async function POST(req) {
     if (!isMatch) {
       return new Response(
         JSON.stringify({ error: "Invalid email or password." }),
-        { status: 401, headers: { "Content-Type": "application/json" } }
+        { status: 401, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -41,13 +41,13 @@ export async function POST(req) {
     const accessToken = jwt.sign(
       { userId: user._id, email: user.email },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "15m" }
+      { expiresIn: "15m" },
     );
 
     const refreshToken = jwt.sign(
       { userId: user._id },
       process.env.REFRESH_TOKEN_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
 
     return new Response(
@@ -61,7 +61,7 @@ export async function POST(req) {
           image: user.image || null,
         },
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   } catch (error) {
     console.error("Error in /api/auth/login:", error);

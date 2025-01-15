@@ -22,7 +22,7 @@ const HotelDetails = ({ hotel }) => {
       setLoading(true);
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/hotels/${hotel.hotel.id}/reviews`
+        `${process.env.NEXT_PUBLIC_BASE_URL}/hotels/${hotel.hotel.id}/reviews`,
       );
 
       if (!response.ok) {

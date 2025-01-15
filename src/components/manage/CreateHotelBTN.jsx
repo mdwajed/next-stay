@@ -3,9 +3,12 @@ import React from "react";
 
 export const CreateBTN = () => {
   return (
-    <button className="bg-primary text-white px-4 py-2 rounded-lg hover:brightness-90 transition-colors">
+    <Link
+      href="/create"
+      className="bg-primary text-white px-4 py-2 rounded-lg hover:brightness-90 transition-colors"
+    >
       + Create Hotel
-    </button>
+    </Link>
   );
 };
 export const EditBTN = () => {

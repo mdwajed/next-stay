@@ -4,7 +4,7 @@ const calculateAverageRating = (reviews) => {
   const totalRating = reviews.reduce(
     (sum, review) =>
       sum + parseFloat(review.rating["$numberDouble"] || review.rating || 0),
-    0
+    0,
   );
   return (totalRating / reviews.length).toFixed(1);
 };

@@ -1,8 +1,72 @@
-import { model, models, Schema } from "mongoose";
-const reviewSchema = new Schema({
-  reviewerName: {
+import { model, models, Schema, Types } from "mongoose";
+
+const propertySchema = new Schema({
+  userId: {
+    type: Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  propertyName: {
     type: String,
     required: true,
+    trim: true,
+  },
+  location: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  price: {
+    type: Number,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  roomsAvailable: {
+    type: Number,
+    required: true,
+  },
+  guests: {
+    type: Number,
+    required: true,
+  },
+  bedrooms: {
+    type: Number,
+    required: true,
+  },
+  beds: {
+    type: Number,
+    required: true,
+  },
+  rating: {
+    type: Number,
+    required: false,
+    default: 0,
+    min: 0,
+    max: 5,
+  },
+  image: {
+    type: String,
+    required: false,
+    default: "https://placehold.co/600x400",
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+export const Property = models.Property || model("Property", propertySchema);
+
+// Review Schema
+
+const reviewSchema = new Schema({
+  reviewerName: {
+    type: String, // Use ObjectId type
+    required: true,
+    ref: "User",
   },
   rating: {
     type: Number,
@@ -24,6 +88,9 @@ const reviewSchema = new Schema({
     default: Date.now,
   },
 });
+
+// Hotel Schema
+
 const HotelSchema = new Schema(
   {
     name: { type: String, required: true, trim: true },
@@ -41,17 +108,25 @@ const HotelSchema = new Schema(
     toJSON: {
       virtuals: true,
       transform: (_, ret) => {
-        ret.id = ret._id; // Create an `id` field as a copy of `_id`
-        delete ret._id; // Remove the `_id` field
+        ret.id = ret._id;
+        delete ret._id;
       },
     },
-  }
+  },
 );
 
 const Hotel = models.Hotel || model("Hotel", HotelSchema);
 export default Hotel;
 
 const userSchema = new Schema(
+  // {
+  //   userId: {
+  //     // Add a userId field for UUID
+  //     type: String, // You can store UUID as a string
+  //     required: true,
+  //     unique: true,
+  //   },
+  // },
   {
     name: {
       type: String,
@@ -75,10 +150,10 @@ const userSchema = new Schema(
     toJSON: {
       virtuals: true,
       transform: (_, ret) => {
-        ret.id = ret._id; // Add `id` field
-        delete ret._id; // Remove `_id`
+        ret.id = ret._id;
+        delete ret._id;
       },
     },
-  }
+  },
 );
 export const User = models.User || model("User", userSchema);

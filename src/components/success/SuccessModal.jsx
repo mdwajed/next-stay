@@ -67,7 +67,7 @@ const SuccessModal = () => {
                   <span className="text-zinc-600 text-sm">Check-in</span>
                   <span className="font-semibold">
                     {new Date(
-                      reservationDetails?.checkInDate
+                      reservationDetails?.checkInDate,
                     ).toLocaleDateString()}
                   </span>
                 </div>
@@ -75,7 +75,7 @@ const SuccessModal = () => {
                   <span className="text-zinc-600 text-sm">Check-out</span>
                   <span className="font-semibold">
                     {new Date(
-                      reservationDetails?.checkOutDate
+                      reservationDetails?.checkOutDate,
                     ).toLocaleDateString()}
                   </span>
                 </div>

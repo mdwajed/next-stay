@@ -73,17 +73,17 @@ export const handleDownloadReceipt = async (paymentSummary) => {
   currentY -= 20;
   page.drawText(
     `Check-in: ${new Date(
-      reservationDetails?.checkInDate
+      reservationDetails?.checkInDate,
     ).toLocaleDateString()}`,
-    { x: 40, y: currentY, size: 10 }
+    { x: 40, y: currentY, size: 10 },
   );
 
   currentY -= 20;
   page.drawText(
     `Check-out: ${new Date(
-      reservationDetails?.checkOutDate
+      reservationDetails?.checkOutDate,
     ).toLocaleDateString()}`,
-    { x: 40, y: currentY, size: 10 }
+    { x: 40, y: currentY, size: 10 },
   );
 
   currentY -= 20;
@@ -100,13 +100,13 @@ export const handleDownloadReceipt = async (paymentSummary) => {
   currentY -= 20;
   page.drawText(
     `Total Amount Paid: $${(priceDetails?.total ?? 0).toFixed(2)}`,
-    { x: 40, y: currentY, size: 10 }
+    { x: 40, y: currentY, size: 10 },
   );
 
   currentY -= 20;
   page.drawText(
     `Cleaning Fee: $${(priceDetails?.cleaningFee ?? 0).toFixed(2)}`,
-    { x: 40, y: currentY, size: 10 }
+    { x: 40, y: currentY, size: 10 },
   );
 
   currentY -= 20;
@@ -130,13 +130,13 @@ export const handleDownloadReceipt = async (paymentSummary) => {
   currentY -= 20;
   page.drawText(
     `${billingDetails?.address.city}, ${billingDetails?.address.state}`,
-    { x: 40, y: currentY, size: 10 }
+    { x: 40, y: currentY, size: 10 },
   );
 
   currentY -= 20;
   page.drawText(
     `${billingDetails?.address.country}, ${billingDetails?.address.postalCode}`,
-    { x: 40, y: currentY, size: 10 }
+    { x: 40, y: currentY, size: 10 },
   );
 
   // Serialize PDF

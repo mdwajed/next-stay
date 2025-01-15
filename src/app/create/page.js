@@ -1,4 +1,4 @@
-import Create from "@/components/hotel/Create/Create";
+import Create from "@/components/Create/Create";
 import React from "react";
 
 const CreatePage = () => {

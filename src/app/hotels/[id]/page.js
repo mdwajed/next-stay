@@ -5,7 +5,7 @@ export async function generateMetadata({ params }) {
     `${process.env.NEXT_PUBLIC_BASE_URL}/hotels/${params.id}`,
     {
       cache: "no-store",
-    }
+    },
   );
   const hotel = await response.json();
   console.log("single hotel", hotel);
@@ -20,7 +20,7 @@ async function fetchHotelDetails(id) {
     `${process.env.NEXT_PUBLIC_BASE_URL}/hotels/${id}`,
     {
       cache: "no-store",
-    }
+    },
   );
 
   if (!response.ok) throw new Error("Failed to fetch hotel details");

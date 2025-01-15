@@ -97,7 +97,7 @@ export default function AuthModal({ children }) {
         onDismiss();
       }
     },
-    [onDismiss]
+    [onDismiss],
   );
 
   const onKeyDown = useCallback(
@@ -106,7 +106,7 @@ export default function AuthModal({ children }) {
         onDismiss();
       }
     },
-    [onDismiss]
+    [onDismiss],
   );
 
   useEffect(() => {

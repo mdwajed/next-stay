@@ -10,7 +10,7 @@ import BillPayment from "./BillPayment";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
 );
 
 const PaymentProcess = () => {
@@ -26,12 +26,12 @@ const PaymentProcess = () => {
       const parsedDetails = JSON.parse(storedDetails);
       if (parsedDetails.checkInDate) {
         parsedDetails.checkInDate = new Date(
-          parsedDetails.checkInDate
+          parsedDetails.checkInDate,
         ).toISOString();
       }
       if (parsedDetails.checkOutDate) {
         parsedDetails.checkOutDate = new Date(
-          parsedDetails.checkOutDate
+          parsedDetails.checkOutDate,
         ).toISOString();
       }
 
@@ -55,9 +55,9 @@ const PaymentProcess = () => {
     Math.ceil(
       (new Date(updatedDetails.checkOutDate) -
         new Date(updatedDetails.checkInDate)) /
-        (1000 * 60 * 60 * 24)
+        (1000 * 60 * 60 * 24),
     ),
-    0
+    0,
   );
   const calculatePrice = () => {
     if (!updatedDetails.checkInDate || !updatedDetails.checkOutDate) {
@@ -67,9 +67,9 @@ const PaymentProcess = () => {
       Math.ceil(
         (new Date(updatedDetails.checkOutDate) -
           new Date(updatedDetails.checkInDate)) /
-          (1000 * 60 * 60 * 24)
+          (1000 * 60 * 60 * 24),
       ),
-      0
+      0,
     );
     const nightlyRate = reservationDetails.hotel?.pricePerNight || 0;
     const cleaningFee = 17.5;
@@ -112,7 +112,7 @@ const PaymentProcess = () => {
                         : null,
                       updatedDetails.checkOutDate
                         ? new Date(updatedDetails.checkOutDate)
-                        : null
+                        : null,
                     ) || "No dates selected"}
                   </p>
                 ) : (

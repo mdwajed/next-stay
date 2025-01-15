@@ -19,7 +19,7 @@ export const formatDateRange = (startDate, endDate) => {
     }).format(end);
 
     const year = new Intl.DateTimeFormat("en-US", { year: "numeric" }).format(
-      start
+      start,
     );
 
     return `${formattedStart} - ${formattedEnd}, ${year}`;

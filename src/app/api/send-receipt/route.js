@@ -27,7 +27,7 @@ export async function POST(req) {
           ? new Date(reservationDetails?.checkInDate).toLocaleDateString()
           : "N/A"
       }`,
-      { x: 50, y: 680, size: 12 }
+      { x: 50, y: 680, size: 12 },
     );
     page.drawText(
       `Check-out: ${
@@ -35,7 +35,7 @@ export async function POST(req) {
           ? new Date(reservationDetails?.checkOutDate).toLocaleDateString()
           : "N/A"
       }`,
-      { x: 50, y: 660, size: 12 }
+      { x: 50, y: 660, size: 12 },
     );
     page.drawText(`Total Paid: $${priceDetails?.total?.toFixed(2) || "0.00"}`, {
       x: 50,
@@ -72,7 +72,7 @@ export async function POST(req) {
       JSON.stringify({ message: "Receipt sent successfully!" }),
       {
         status: 200,
-      }
+      },
     );
   } catch (error) {
     // Handle errors and return them as JSON response
@@ -83,7 +83,7 @@ export async function POST(req) {
       }),
       {
         status: 500,
-      }
+      },
     );
   }
 }

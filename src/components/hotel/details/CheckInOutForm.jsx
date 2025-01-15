@@ -34,7 +34,7 @@ const CheckInOutForm = ({ hotel }) => {
 
     localStorage.setItem(
       "reservationDetails",
-      JSON.stringify(reservationDetails)
+      JSON.stringify(reservationDetails),
     );
 
     router.push("/payment");

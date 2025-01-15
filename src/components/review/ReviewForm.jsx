@@ -24,7 +24,7 @@ const ReviewForm = ({ onSubmit, hotelId, onClose }) => {
             rating,
             reviewText,
           }),
-        }
+        },
       );
 
       if (!response.ok) {

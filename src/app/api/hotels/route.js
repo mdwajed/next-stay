@@ -9,12 +9,18 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "8");
+    const search = searchParams.get("search") || "";
 
-    const hotels = await Hotel.find()
+    // Build query
+    const query = search
+      ? { name: { $regex: search, $options: "i" } } // Case-insensitive search
+      : {};
+    // Fetch hotels with pagination and filtering
+    const hotels = await Hotel.find(query)
       .skip((page - 1) * limit)
       .limit(limit)
       .sort({ createdAt: -1 });
-    const total = await Hotel.countDocuments();
+    const total = await Hotel.countDocuments(query);
 
     return NextResponse.json({
       data: hotels,
@@ -28,7 +34,7 @@ export async function GET(req) {
   } catch (error) {
     return NextResponse.json(
       { message: error.message || "Error fetching hotels" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

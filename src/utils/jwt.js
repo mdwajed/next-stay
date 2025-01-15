@@ -22,7 +22,7 @@ export async function refreshAccessToken(token) {
       `${process.env.NEXT_PUBLIC_BASE_URL}/auth/refresh`,
       {
         refreshToken: token.refreshToken,
-      }
+      },
     );
 
     const refreshedTokens = response.data;
@@ -35,7 +35,7 @@ export async function refreshAccessToken(token) {
   } catch (error) {
     console.error(
       "Failed to refresh access token:",
-      error.response?.data || error.message
+      error.response?.data || error.message,
     );
     throw new Error("RefreshAccessTokenError");
   }

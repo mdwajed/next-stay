@@ -44,7 +44,7 @@ async function refreshAccessToken(token) {
             Authorization: `Bearer ${token.refreshToken}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       console.log(response);
@@ -100,7 +100,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
                 password: credentials.password,
               }),
               headers: { "Content-Type": "application/json" },
-            }
+            },
           );
           if (!res.ok) {
             return null;

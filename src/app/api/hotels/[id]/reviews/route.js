@@ -11,7 +11,7 @@ export async function GET(_, { params }) {
     if (!hotel) {
       return NextResponse.json(
         { message: `Hotel ${params.id} not found` },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -29,7 +29,7 @@ export async function POST(req, { params }) {
     if (!session || !session.user) {
       return NextResponse.json(
         { message: "Authentication required" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -41,7 +41,7 @@ export async function POST(req, { params }) {
     if (!rating || !reviewText) {
       return NextResponse.json(
         { message: "Rating and review text are required." },
-        { status: 400 }
+        { status: 400 },
       );
     }
     // Find the hotel by ID
@@ -50,7 +50,7 @@ export async function POST(req, { params }) {
     if (!hotel) {
       return NextResponse.json(
         { message: `Hotel ${params.id} not found` },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -69,7 +69,7 @@ export async function POST(req, { params }) {
     if (existingReview) {
       return NextResponse.json(
         { message: "You have already reviewed this hotel." },
-        { status: 400 }
+        { status: 400 },
       );
     }
     // Create and add the new review
@@ -89,7 +89,7 @@ export async function POST(req, { params }) {
     // await hotel.save();
     await Hotel.updateOne(
       { _id: params.id },
-      { $push: { reviews: newReview } }
+      { $push: { reviews: newReview } },
     );
     return NextResponse.json({ review: newReview });
   } catch (error) {
@@ -106,7 +106,7 @@ export async function DELETE(_, { params }) {
     if (!hotel) {
       return NextResponse.json(
         { message: `Hotel ${params.id} not found` },
-        { status: 404 }
+        { status: 404 },
       );
     }
 

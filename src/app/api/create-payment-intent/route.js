@@ -39,7 +39,7 @@ export async function POST(req) {
     if (!amount || amount <= 0) {
       return new Response(
         JSON.stringify({ error: "Invalid or missing amount" }),
-        { status: 400 }
+        { status: 400 },
       );
     }
     const paymentIntent = await stripe.paymentIntents.create({
@@ -51,7 +51,7 @@ export async function POST(req) {
       {
         status: 200,
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
   } catch (error) {
     return new Response(JSON.stringify({ error: error.message }), {

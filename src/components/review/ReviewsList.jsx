@@ -1,7 +1,4 @@
-import Image from "next/image";
-
 const ReviewsList = ({ reviews, onDeleteReview, session }) => {
-  console.log("review session", session);
   return (
     <div className="grid grid-cols-2 gap-8">
       {reviews.map((review, index) => (

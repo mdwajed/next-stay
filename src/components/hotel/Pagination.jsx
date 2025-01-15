@@ -33,7 +33,7 @@ const Pagination = ({ pagination, currentPage }) => {
                   {pageNumber}
                 </Link>
               </li>
-            )
+            ),
           )}
           {currentPage < pagination.totalPages && (
             <li>
